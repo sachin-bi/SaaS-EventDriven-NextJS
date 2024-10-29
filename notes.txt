@@ -7,3 +7,14 @@
 5 - design model in prisma/schema.prisma
 6 - migrate to sync with remote db model then generate to get prisma client
 7 - created lib/prisma.ts - for making db connection and using CRUD operations
+
+
+## Handle Custom Signup flow in Clerk
+8 - focused on sign-up/page.tsx
+9 - several components(like card,btn,etc) from shadcn installed
+9 - lucide-react was installed for icons, like Eye, Eyeoff
+10 - Custom Clerk was set in Signup/page.tsx for Signup then verify and createdSession then route Puse to login page
+
+
+## Clerk Middleware for Role based access
+11 - 
