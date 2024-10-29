@@ -1,0 +1,9 @@
+
+
+1 - installed nextjs app
+2 - created project named saas-EDM in neon(postgresql)
+3 - installed prisma dev dependency ```npm install prisma --save-dev```
+4 - installed prisma init datasoure provider postgresql ```npx prisma init --datasource-provider postgresql```
+5 - design model in prisma/schema.prisma
+6 - migrate to sync with remote db model then generate to get prisma client
+7 - created lib/prisma.ts - for making db connection and using CRUD operations
