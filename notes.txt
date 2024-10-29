@@ -16,5 +16,11 @@
 10 - Custom Clerk was set in Signup/page.tsx for Signup then verify and createdSession then route Puse to login page
 
 
-## Clerk Middleware for Role based access
-11 - 
+## Clerk Middleware for Role based access and signin page
+11 - create public route available for all... using clerkMiddleware , createRouteMatcher in Middleware.ts
+12 - Middleware.ts: implements authentication and authorization for Next.js routes using Clerk. It redirects unauthenticated users to the sign-in page, redirects admin users to the admin dashboard, and redirects non-admin users to the user dashboard. It also handles errors gracefully and redirects to an error page.
+13 - Custom signin page completed with Clerk signin.
+
+
+## Handling Webhooks | Clerk Webhooks
+14 - 
