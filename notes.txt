@@ -23,4 +23,13 @@
 
 
 ## Handling Webhooks | Clerk Webhooks
-14 - 
+14 - Webhook initiated for user.created on Clerk and WEBHOOKS_SECRET is set to .env
+15 - installed svix npm, for Webhook decode and identify
+16 - localTunnel installed, for getting a domain, which is provided to Clerk/endpoint.
+17 - designed app\api\webhook\register\route.ts
+18 - Verify Webhooks with the Svix Libraries , docs(https://docs.svix.com/receiving/verifying-payloads/how)
+19 - get verifed from webhook/Clerk, before registering data to db 
+
+## prisma CRUD and pagination
+20 - 
+
