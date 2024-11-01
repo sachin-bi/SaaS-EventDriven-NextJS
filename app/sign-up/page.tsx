@@ -1,5 +1,5 @@
 
-
+'use client'
 import { useSignUp } from '@clerk/nextjs'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -41,7 +41,7 @@ function Signup() {
     }
 
     async function submit(e: React.FormEvent) {
-        e.preventDefault()
+        e.preventDefault();
         if (!isLoaded) {
             return (<p>Loading... Almost done !</p>)
         }
@@ -67,7 +67,7 @@ function Signup() {
 
 
     async function onPressVerify(e: React.FormEvent) {
-        e.preventDefault()
+        e.preventDefault();
         if (!isLoaded) {
             return (<p>Loading... Almost there !</p>)
         }

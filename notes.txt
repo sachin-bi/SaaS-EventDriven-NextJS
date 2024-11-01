@@ -40,8 +40,8 @@
 ## Handling API calls in frontend
 24 - dashboard/page.tsx , installed usehooks(https://usehooks-ts.com/react-hook/use-debounce-value) 
 25 - todos page added
-26 - 
 
 
+26 - debugging 
 
 

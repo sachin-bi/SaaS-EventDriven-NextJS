@@ -4,7 +4,7 @@ import prisma from "@/lib/prisma";
 
 const ITEMS_PER_PAGE = 10;
 
-export async function GET(requset: Request) {
+export async function GET(requset: NextRequest) {
   const { userId } = await auth();
   if (!userId) {
     return NextResponse.json(
@@ -84,7 +84,7 @@ export async function POST(requset: NextRequest) {
       include: { todos: true },
     });
 
-    console.log("-- :: from POST todos/route", user);
+    console.log("-- :: from POST todos/route user::", user);
 
     if (!user) {
       return NextResponse.json(

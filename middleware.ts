@@ -1,7 +1,9 @@
 // import { authMiddleware } from '@clerk/nextjs/server'    //depricreated...
-import { currentUser } from "@clerk/nextjs/server";
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
+import { currentUser } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
+import { auth, clerkClient } from "@clerk/nextjs/server";
+
 
 const isPublicRoute = createRouteMatcher([
   "/",
@@ -11,7 +13,10 @@ const isPublicRoute = createRouteMatcher([
 ]);
 
 export default clerkMiddleware(async (auth, request) => {
+  
   const { userId } = await auth();
+
+  // console.log("----A Clerk Middleware userID:.",userId);
 
   // Handle unauthenticated users trying to access protected routes
 
@@ -22,7 +27,16 @@ export default clerkMiddleware(async (auth, request) => {
   }
   try {
     if (userId) {
-      const user = await currentUser();
+      // console.log("---- B. Clerk Middleware user::."); //TODO: error here!!
+
+      // const user = await currentUser();
+      // const user = await clerkClient.users.getUser(auth.userId); // Fetch user data from Clerk
+
+      const client = await clerkClient();
+      const user = await client.users?.getUser(userId);
+
+      // console.log("---- C. Clerk Middleware user::.",user);
+
       if (!user) {
         console.log("-- currentUser not found.! @mw.ts, user::", user);
 
@@ -58,9 +72,15 @@ export default clerkMiddleware(async (auth, request) => {
 
 export const config = {
   matcher: [
-    // Skip Next.js internals and all static files, unless found in search params
-    "/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)",
-    // Always run for API routes
-    "/(api|trpc)(.*)",
+    "/",                    // Home route
+    "/((?!_next|favicon.ico).*)" // All other routes, excluding Next.js internals and static assets
   ],
 };
+// export const config = {
+//   matcher: [
+//     // Skip Next.js internals and all static files, unless found in search params
+//     "/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)",
+//     // Always run for API routes
+//     "/(api|trpc)(.*)",
+//   ],
+// };

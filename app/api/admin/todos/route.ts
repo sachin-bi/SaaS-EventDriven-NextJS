@@ -4,13 +4,11 @@ import prisma from "@/lib/prisma";
 
 const ITEMS_PER_PAGE = 10;
 
-// here - how to verify wether u r admin or not.!
 async function isAdmin(userId: string) {
-  // await clerkClient.users.getUser(userId)
+  //   const user = await clerkClient.users.getUser(userId);
   const client = await clerkClient();
   const user = await client.users?.getUser(userId);
-
-  return user.privateMetadata.role === "admin";
+  return user.publicMetadata.role === "admin";
 }
 
 ///////////     ////////    ///////     ////////       /////////     ///////////////
@@ -18,8 +16,12 @@ async function isAdmin(userId: string) {
 export async function GET(req: NextRequest) {
   const { userId } = await auth();
 
-  if (!userId || !(await isAdmin(userId))) {
+  if (!userId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  if (!(await isAdmin(userId))) {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
   const { searchParams } = new URL(req.url);
@@ -27,26 +29,32 @@ export async function GET(req: NextRequest) {
   const page = parseInt(searchParams.get("page") || "1");
 
   try {
-    let user;
-    if (email) {
-      user = await prisma.user.findUnique({
-        where: { email },
-        include: {
-          todos: {
-            orderBy: { createdAt: "desc" },
-            take: ITEMS_PER_PAGE,
-            skip: (page - 1) * ITEMS_PER_PAGE,
-          },
+    const user = await prisma.user.findUnique({
+      where: { email: email || "" },
+      include: {
+        todos: {
+          orderBy: { createdAt: "desc" },
+          take: ITEMS_PER_PAGE,
+          skip: (page - 1) * ITEMS_PER_PAGE,
         },
-      });
+      },
+    });
+
+    if (!user) {
+      return NextResponse.json({ user: null, totalPages: 0, currentPage: 1 });
     }
 
-    const totalItems = email
-      ? await prisma.todo.count({ where: { user: { email } } })
-      : 0;
-    const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
+    const totalTodos = await prisma.todo.count({
+      where: { userId: user.id },
+    });
 
-    return NextResponse.json({ user, totalPages, currentPage: page });
+    const totalPages = Math.ceil(totalTodos / ITEMS_PER_PAGE);
+
+    return NextResponse.json({
+      user,
+      totalPages,
+      currentPage: page,
+    });
   } catch (error) {
     return NextResponse.json(
       { error: "Internal Server Error" },
@@ -54,44 +62,44 @@ export async function GET(req: NextRequest) {
     );
   }
 }
-
 ///////////     ////////    ///////     ////////       /////////     ///////////////
 
 export async function PUT(req: NextRequest) {
   const { userId } = await auth();
 
-  if (!userId || !(await isAdmin(userId))) {
+  if (!userId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  try {
-    const { email, isSubscribed, todoId, todoCompleted, todoTitle } =
-      await req.json();
+  if (!(await isAdmin(userId))) {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
 
-    if (isSubscribed !== undefined) {
-      await prisma.user.update({
+  try {
+    const { email, todoId, todoCompleted, isSubscribed } = await req.json();
+
+    if (todoId !== undefined && todoCompleted !== undefined) {
+      // Update todo
+      const updatedTodo = await prisma.todo.update({
+        where: { id: todoId },
+        data: { completed: todoCompleted },
+      });
+      return NextResponse.json(updatedTodo);
+    } else if (isSubscribed !== undefined) {
+      // Update user subscription
+      const updatedUser = await prisma.user.update({
         where: { email },
         data: {
-          // isSubscribed,
           ...(isSubscribed && { isSubscribed }), // Only include if defined
           subscriptionEnds: isSubscribed
             ? new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
             : null,
         },
       });
+      return NextResponse.json(updatedUser);
+    } else {
+      return NextResponse.json({ error: "Invalid request" }, { status: 400 });
     }
-
-    if (todoId) {
-      await prisma.todo.update({
-        where: { id: todoId },
-        data: {
-          completed: todoCompleted !== undefined ? todoCompleted : undefined,
-          title: todoTitle || undefined,
-        },
-      });
-    }
-
-    return NextResponse.json({ message: "Update successful" });
   } catch (error) {
     return NextResponse.json(
       { error: "Internal Server Error" },
@@ -99,25 +107,21 @@ export async function PUT(req: NextRequest) {
     );
   }
 }
-
 ///////////     ////////    ///////     ////////       /////////     ///////////////
 
 export async function DELETE(req: NextRequest) {
   const { userId } = await auth();
 
-  if (!userId || !(await isAdmin(userId))) {
+  if (!userId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  if (!(await isAdmin(userId))) {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
   try {
     const { todoId } = await req.json();
-
-    if (!todoId) {
-      return NextResponse.json(
-        { error: "Todo ID is required" },
-        { status: 400 }
-      );
-    }
 
     await prisma.todo.delete({
       where: { id: todoId },

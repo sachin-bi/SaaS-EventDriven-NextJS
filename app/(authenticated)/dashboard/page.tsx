@@ -1,14 +1,23 @@
 "use client";
 
-import { useUser } from '@clerk/nextjs';
-import { Todo } from '@prisma/client';
-import { log } from 'console';
-import React, { useCallback, useEffect, useState } from 'react'
-import { useDebounceValue } from 'usehooks-ts';
+// import { useToast } from "@/hooks/use-toast";
+import { useCallback, useEffect, useState } from "react";
+import { TodoItem } from "@/components/TodoItem";
+import { TodoForm } from "@/components/TodoForm";
+import { Todo } from "@prisma/client";
+import { useUser } from "@clerk/nextjs";
+import { AlertTriangle } from "lucide-react";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Input } from "@/components/ui/input";
+import { Pagination } from "@/components/Pagination";
+import Link from "next/link";
+import { useDebounceValue } from "usehooks-ts";
 
 
-function Dashboard() {
-    const { user } = useUser()
+
+export default function Dashboard() {
+    const { user } = useUser();
     const [todos, setTodos] = useState<Todo[]>([])
     const [searchTerm, setSearchTerm] = useState("")
     const [loading, setLoading] = useState(false)
@@ -119,13 +128,74 @@ function Dashboard() {
             // toast err occured
         }
     }
-
-
     return (
-        <div>
-
+        <div className="container mx-auto p-4 max-w-3xl mb-8">
+            <h1 className="text-3xl font-bold mb-8 text-center">
+                Welcome, {user?.emailAddresses[0].emailAddress}!
+            </h1>
+            <Card className="mb-8">
+                <CardHeader>
+                    <CardTitle>Add New Todo</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <TodoForm onSubmit={(title) => handleAddTodo(title)} />
+                </CardContent>
+            </Card>
+            {!isSubscribed && todos.length >= 3 && (
+                <Alert variant="destructive" className="mb-8">
+                    <AlertTriangle className="h-4 w-4" />
+                    <AlertDescription>
+                        You&apos;ve reached the maximum number of free todos.{" "}
+                        <Link href="/subscribe" className="font-medium underline">
+                            Subscribe now
+                        </Link>{" "}
+                        to add more.
+                    </AlertDescription>
+                </Alert>
+            )}
+            <Card>
+                <CardHeader>
+                    <CardTitle>Your Todos</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <Input
+                        type="text"
+                        placeholder="Search todos..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="mb-4"
+                    />
+                    {loading ? (
+                        <p className="text-center text-muted-foreground">
+                            Loading your todos...
+                        </p>
+                    ) : todos.length === 0 ? (
+                        <p className="text-center text-muted-foreground">
+                            You don&apos;t have any todos yet. Add one above!
+                        </p>
+                    ) : (
+                        <>
+                            <ul className="space-y-4">
+                                {todos.map((todo: Todo) => (
+                                    <TodoItem
+                                        key={todo.id}
+                                        todo={todo}
+                                        onUpdate={handleUpdateTodo}
+                                        onDelete={handleDeleteTodo}
+                                    />
+                                ))}
+                            </ul>
+                            <Pagination
+                                currentPage={currentPage}
+                                totalPages={totalPages}
+                                onPageChange={(page) => fetchTodos(page)}
+                            />
+                        </>
+                    )}
+                </CardContent>
+            </Card>
         </div>
-    )
+    );
+
 }
 
-export default Dashboard

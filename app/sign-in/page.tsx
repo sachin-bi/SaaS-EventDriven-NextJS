@@ -1,4 +1,5 @@
 
+'use client'
 import { useSignIn } from '@clerk/nextjs'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -32,10 +33,13 @@ function Signin() {
     const router = useRouter()
 
     if (!isLoaded) {
-        return (<p>Loading...</p>)
+        // return (<p>Loading...</p>)
+        return null;
     }
 
     async function submit(e: React.FormEvent) {
+        e.preventDefault();
+        
         if (!isLoaded) {
             return (<p>Loading...</p>)
         }

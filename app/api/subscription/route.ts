@@ -3,7 +3,7 @@ import { auth } from "@clerk/nextjs/server";
 import prisma from "@/lib/prisma";
 
 
-export async function POST(requset: Request) {
+export async function POST() {
   const { userId } = await auth();
   if (!userId) {
     return NextResponse.json(
@@ -57,7 +57,7 @@ export async function POST(requset: Request) {
 
 //////    ///////     ///////   ////////     /////////   ///////
 
-export async function GET(requset: Request) {
+export async function GET() {
   const { userId } = await auth();
   if (!userId) {
     return NextResponse.json(
