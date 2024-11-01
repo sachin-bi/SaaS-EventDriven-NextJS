@@ -32,5 +32,8 @@
 19 - get verifed from webhook/Clerk, before registering data to db 
 
 ## prisma CRUD and pagination
-20 - 
+20 - subsription route with GET & POST //TODO: add a payment gate way
+21 - user can not post more than 3 todo , for that they need to take subsription.
+22 - route created for todos pagination, add todo, delete todo
+23 - //TODO: admin route
 

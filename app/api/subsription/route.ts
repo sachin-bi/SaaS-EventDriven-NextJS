@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import prisma from "@/lib/prisma";
-import { error } from "console";
+
 
 export async function POST(requset: Request) {
   const { userId } = await auth();
@@ -44,15 +44,15 @@ export async function POST(requset: Request) {
       },
       { status: 200 }
     );
-  } catch (err) {
-    console.error(`-- Err :: from sub/route:: ${err}`);
-    return NextResponse.json(
-      {
-        error: `-- Err :: from sub/route:: ${err}`,
-      },
-      { status: 500 }
-    );
-  }
+    } catch (err) {
+      console.error(`-- Err :: from sub/route:: ${err}`);
+      return NextResponse.json(
+        {
+          error: `-- Err :: from sub/route:: ${err}`,
+        },
+        { status: 500 }
+      );
+    }
 }
 
 //////    ///////     ///////   ////////     /////////   ///////
