@@ -62,7 +62,7 @@ export async function GET(requset: NextRequest) {
     );
   }
 }
-
+////////////////   //////////////    ////////////////////    ///////////////   ///////////////    ///////////////
 // adding a new todo
 export async function POST(requset: NextRequest) {
   const { userId } = await auth();
@@ -77,14 +77,15 @@ export async function POST(requset: NextRequest) {
 
   //it gets all the array/todos of that particular user  - basically it performs join operations.
   // should return array to all todos
-
   try {
+
     const user = await prisma.user.findUnique({
       where: { id: userId },
       include: { todos: true },
     });
 
-    console.log("-- :: from POST todos/route user::", user);
+    console.log("-- :: from POST todos/route  ::userid", userId);
+    console.log("-- :: from POST todos/route user:: ", user);
 
     if (!user) {
       return NextResponse.json(

@@ -50,7 +50,7 @@ function Signup() {
             await signUp.create({
                 emailAddress,
                 password
-            })
+            });
 
             await signUp.prepareEmailAddressVerification({
                 strategy: "email_code"
@@ -87,7 +87,7 @@ function Signup() {
 
 
         } catch (err: any) {
-            console.log('--err in onPressVerify fn signup page.tsx::', JSON.stringify(err, null, 2));
+            console.error('--err in onPressVerify fn signup page.tsx::', JSON.stringify(err, null, 2));
             setError(err.errors[0].message)
 
         }

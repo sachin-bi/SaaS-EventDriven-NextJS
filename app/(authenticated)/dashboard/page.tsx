@@ -72,6 +72,7 @@ export default function Dashboard() {
 
     const handleAddTodo = async (title: string) => {
         try {
+            //this respponse not working
             const response = await fetch("/api/todos", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
