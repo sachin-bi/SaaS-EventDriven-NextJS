@@ -35,5 +35,13 @@
 20 - subsription route with GET & POST //TODO: add a payment gate way
 21 - user can not post more than 3 todo , for that they need to take subsription.
 22 - route created for todos pagination, add todo, delete todo
-23 - //TODO: admin route
+23 - admin route done using clerkclient metadata.
+
+## Handling API calls in frontend
+24 - dashboard/page.tsx , installed usehooks(https://usehooks-ts.com/react-hook/use-debounce-value) 
+25 - todos page added
+26 - 
+
+
+
 

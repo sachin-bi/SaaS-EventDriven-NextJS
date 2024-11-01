@@ -4,8 +4,6 @@ import prisma from "@/lib/prisma";
 
 const ITEMS_PER_PAGE = 10;
 
-
-
 export async function GET(requset: Request) {
   const { userId } = await auth();
   if (!userId) {
@@ -52,6 +50,8 @@ export async function GET(requset: Request) {
       currentPage: page,
       totalPages,
     });
+
+    //
   } catch (err) {
     console.error(`-- Err :: from todos/route:: ${err}`);
     return NextResponse.json(
@@ -114,8 +114,7 @@ export async function POST(requset: NextRequest) {
     });
 
     return NextResponse.json(todo, { status: 201 });
-  } 
-  catch (err) {
+  } catch (err) {
     console.error(`-- Err :: from POST sub/route:: ${err}`);
     return NextResponse.json(
       {
