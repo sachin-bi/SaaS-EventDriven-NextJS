@@ -115,7 +115,7 @@ export default function Dashboard() {
     const handleDeleteTodo = async (id: string) => {
 
         try {
-            const response = await fetch(`/api/todo/${id}`, {
+            const response = await fetch(`/api/todos/${id}`, {
                 method: "DELETE",
             })
             if (!response.ok) {

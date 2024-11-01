@@ -49,7 +49,7 @@ export async function GET(requset: NextRequest) {
       todos,
       currentPage: page,
       totalPages,
-    });
+    }, { status: 200 });
 
     //
   } catch (err) {
@@ -84,8 +84,8 @@ export async function POST(requset: NextRequest) {
       include: { todos: true },
     });
 
-    console.log("-- :: from POST todos/route  ::userid", userId);
-    console.log("-- :: from POST todos/route user:: ", user);
+    // console.log("-- :: from POST todos/route  ::userid", userId);
+    // console.log("-- :: from POST todos/route user:: ", user);
 
     if (!user) {
       return NextResponse.json(
@@ -97,6 +97,7 @@ export async function POST(requset: NextRequest) {
     }
 
     if (!user.isSubsribed && user.todos.length >= 3) {
+      console.log("Free users can only create upto 3 todos. Please susbcribe to our paid plans to write more awesome todos")
       return NextResponse.json(
         {
           error:

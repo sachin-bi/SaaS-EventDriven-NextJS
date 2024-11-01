@@ -50,7 +50,7 @@ export async function PUT(
 
 export async function DELETE(
   requset: NextRequest,
-  { params }: { params: { id: string } }
+  {params}: { params: { id: string } }
 ) {
   const { userId } = await auth();
   if (!userId) {
@@ -63,7 +63,7 @@ export async function DELETE(
   }
 
   try {
-    const todoId = params.id;
+    const todoId = params.id; 
     const todo = await prisma.todo.findUnique({
       where: { id: todoId },
     });
